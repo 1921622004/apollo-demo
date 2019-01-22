@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "noImplicitAny": false,
+        "sourceMap": true,
+        "moduleResolution": "node",
+        "removeComments": true,
+        "target": "es2015",
+        "jsx": "preserve",
+        "lib": [
+            "dom",
+            "es6"
+        ]
+    },
+    "include": [
+        "src/**/*",
+        "server/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist/**/*"
+    ]
+}
