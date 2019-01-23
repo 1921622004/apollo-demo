@@ -2,7 +2,7 @@ import * as React from "react";
 
 class App extends React.Component {
   render() {
-    console.log('=======1121');
+    console.log('=======112121212');
     return (
       <div>
         <h1>hello world</h1>
