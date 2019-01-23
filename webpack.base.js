@@ -1,22 +1,21 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
-    entry: './src/index.ts',
+    entry:{
+        main: __dirname + '/src/index'
+    },
     output: {
         filename: 'build.js',
         path: path.resolve(__dirname, 'build')
     },
-    resolve:{
-        extensions: ['.ts','.tsx','.js']
+    resolve: {
+        extensions: ['.ts', '.tsx', '.js']
     },
-    devServer: {
-        contentBase: "./public",
-        open: true,
-        port: 4444
-    },
-    modules: {
+    
+    module: {
         rules: [
             {
                 test: /\.(less|css)$/,
@@ -27,17 +26,19 @@ module.exports = {
             },
             {
                 test: /\.(ts|tsx)$/,
-                loaders: [
+                exclude: /node_modules/,
+                use:[
+                    "babel-loader",
                     "ts-loader"
-                ],
-                include: path.resolve('src')
-            }
+                ]
+            },
         ]
     },
     plugins: [
+        new CleanWebpackPlugin(['build']),
         new HtmlWebpackPlugin({
             template: './public/index.html'
         }),
-        new ExtractTextWebpackPlugin('css/style.css')
+        new ExtractTextWebpackPlugin('css/style.css'),
     ]
 }
