@@ -12,9 +12,8 @@ module.exports = {
         path: path.resolve(__dirname, 'build')
     },
     resolve: {
-        extensions: ['.ts', '.tsx', '.js']
+        extensions: ['.jsx', '.js']
     },
-    
     module: {
         rules: [
             {
@@ -25,11 +24,10 @@ module.exports = {
                 })
             },
             {
-                test: /\.(ts|tsx)$/,
+                test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
                 use:[
-                    "babel-loader",
-                    "ts-loader"
+                    "babel-loader"
                 ]
             },
         ]
@@ -37,7 +35,7 @@ module.exports = {
     plugins: [
         new CleanWebpackPlugin(['build']),
         new HtmlWebpackPlugin({
-            template: './public/index.html'
+            template: './public/index.html',
         }),
         new ExtractTextWebpackPlugin('css/style.css'),
     ]
