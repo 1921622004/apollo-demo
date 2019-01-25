@@ -1,6 +1,9 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const { ApolloServer, gql } = require('apollo-server-koa');
+const fs = require('fs');
+
+let movieList = JSON.parse(fs.readFileSync('./mock/index.json'));
 
 const koaStatic = require('koa-static');
 
@@ -8,8 +11,10 @@ const typeDefs = gql`
   type MovieDetail {
     name: String!
     desc: String!
+    leadingRole: String
     rate: Float
-    poster: String!
+    poster: String
+    id: ID
     alreadyWatched: Boolean
   }
   type MutateRes {
@@ -21,8 +26,18 @@ const typeDefs = gql`
     getUnwatchList(pageSize: Int! = 10, pageNum: Int! = 10): [MovieDetail!]
   }
   type Mutation {
-    addMovie: MutateRes
-    modifyMovieStatus: MutateRes
+    addMovie(
+      name:String!, 
+      leadingRole:String, 
+      desc:String!, 
+      rate: Float, 
+      poster: String, 
+      alreadyWatched: Boolean = false
+    ): MutateRes
+    modifyMovieStatus(
+      id: ID!, 
+      alreadyWatched: Boolean!
+    ): MutateRes
   }
 `;
 
@@ -34,14 +49,24 @@ const resolvers = {
           resolve(2)
         }, 3000);
       })
-      console.log(a);
       return [{
         name: 'Batman',
         desc: `I'm Batman`,
         rate: 8.6,
-        poster: 'a',
+        poster: '2',
         alreadyWatched: false
       }]
+    }
+  },
+  Mutation: {
+    addMovie: (_, { name, desc, rate, poster, alreadyWatched }) => {
+      movieList.push({ name, desc, rate, poster, alreadyWatched });
+      const res = fs.writeFileSync('./mock/index.json', JSON.stringify(movieList));
+      console.log(res);
+      return {
+        code: 0,
+        success: true
+      }
     }
   }
 }
