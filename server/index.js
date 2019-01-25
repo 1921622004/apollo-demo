@@ -5,60 +5,43 @@ const { ApolloServer, gql } = require('apollo-server-koa');
 const koaStatic = require('koa-static');
 
 const typeDefs = gql`
-  enum Sex {
-    male
-    female
-  }
-  enum Identity {
-    student
-    teacher
-  }
-  type LessonDetail {
-    lessonName: String
-    lessonDesc: String
-    lId: ID
-    maxStudent: Number
-    currentStudent: Number
-  }
-  type StudentDetail {
-    sID: ID
+  type MovieDetail {
     name: String!
-    type: Identity
-    sex: Number
-    createTime: String
-    updateTime: String
+    desc: String!
+    rate: Float
+    poster: String!
+    alreadyWatched: Boolean
+  }
+  type MutateRes {
+    code: Int
+    success: Boolean
   }
   type Query {
-    getLessonList(pageNum: Number = 1, pageSize: Number = 10, lessonName: String!) {
-      lessonName: String
-      lessonDesc: String
-      lId: ID
-      status: Boolean
-    },
-    getlessonDetail(lId): LessonDetail,
-    login(sID:Number, password: String) {
-      sID: ID
-      name: String
-      type: Identity
-      sex: Sex,
-      chosedLesson: [LessonDetail!]!
-      ownedLesson: [LessonDetail!]!
-    }
+    getWatchedList(pageSize: Int! = 10, pageNum: Int! = 10): [MovieDetail!]
+    getUnwatchList(pageSize: Int! = 10, pageNum: Int! = 10): [MovieDetail!]
   }
   type Mutation {
-    createLesson(lessonName: String, lessonDesc: String, maxStudent: Number) {
-      lID: ID
-    },
-    chooseLesson(sId: Number, lId: Number){
-      lID: ID
-    }
+    addMovie: MutateRes
+    modifyMovieStatus: MutateRes
   }
 `;
 
 const resolvers = {
   Query: {
-    getLessonList: (...arg) => {
-      console.log(arg);
+    getUnwatchList: async (parent, args, context, info) => {
+      const a = await new Promise(resolve => {
+        setTimeout(() => {
+          resolve(2)
+        }, 3000);
+      })
+      console.log(a);
+      return [{
+        name: 'Batman',
+        desc: `I'm Batman`,
+        rate: 8.6,
+        poster: 'a',
+        alreadyWatched: false
+      }]
     }
   }
 }
