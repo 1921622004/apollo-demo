@@ -1,72 +1,62 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const { ApolloServer, gql } = require('apollo-server-koa');
-const fs = require('fs');
 
-let movieList = JSON.parse(fs.readFileSync('./mock/index.json'));
+const { readFile, writeFile } = require('./utils');
 
 const koaStatic = require('koa-static');
 
 const typeDefs = gql`
-  type MovieDetail {
-    name: String!
-    desc: String!
-    leadingRole: String
-    rate: Float
-    poster: String
+  type TodoItem {
     id: ID
-    alreadyWatched: Boolean
-  }
-  type MutateRes {
-    code: Int
-    success: Boolean
+    content: String
+    checked: Boolean
   }
   type Query {
-    getWatchedList(pageSize: Int! = 10, pageNum: Int! = 10): [MovieDetail!]
-    getUnwatchList(pageSize: Int! = 10, pageNum: Int! = 10): [MovieDetail!]
+    TodoList: [TodoItem!]
   }
   type Mutation {
-    addMovie(
-      name:String!, 
-      leadingRole:String, 
-      desc:String!, 
-      rate: Float, 
-      poster: String, 
-      alreadyWatched: Boolean = false
-    ): MutateRes
-    modifyMovieStatus(
-      id: ID!, 
-      alreadyWatched: Boolean!
-    ): MutateRes
+    createTodo(content: String, checked: Boolean): [TodoItem!]!
+    checkTodo(id: ID): [TodoItem!]!
   }
 `;
 
 const resolvers = {
   Query: {
-    getUnwatchList: async (parent, args, context, info) => {
-      const a = await new Promise(resolve => {
-        setTimeout(() => {
-          resolve(2)
-        }, 3000);
-      })
-      return [{
-        name: 'Batman',
-        desc: `I'm Batman`,
-        rate: 8.6,
-        poster: '2',
-        alreadyWatched: false
-      }]
+    TodoList: async (parent, args, context, info) => {
+      const data = await readFile('./mock/index.json');
+      const todoList = JSON.parse(data);
+      return todoList
     }
   },
   Mutation: {
-    addMovie: (_, { name, desc, rate, poster, alreadyWatched }) => {
-      movieList.push({ name, desc, rate, poster, alreadyWatched });
-      const res = fs.writeFileSync('./mock/index.json', JSON.stringify(movieList));
-      console.log(res);
-      return {
-        code: 0,
-        success: true
-      }
+    createTodo: async (_, { content, checked }) => {
+      const data = await readFile('./mock/index.json');
+      const todoList = JSON.parse(data);
+      const writeErr = await writeFile(
+        './mock/index.json',
+        JSON.stringify(todoList.concat([{
+          content,
+          checked,
+          id: Math.round(Math.random() * 10000)
+        }]))
+      );
+      return !writeErr && todoList
+    },
+    checkTodo: async (_, { id }) => {
+      const data = await readFile('./mock/index.json');
+      const todoList = JSON.parse(data);
+      todoList.forEach((item) => {
+        const { id, checked } = item;
+        if (item.id === id) {
+          item.checked = !checked
+        }
+      });
+      const writeErr = await writeFile(
+        './mock/index.json',
+        JSON.stringify(todoList)
+      );
+      return !writeErr && todoList
     }
   }
 }
