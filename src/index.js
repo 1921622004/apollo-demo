@@ -1,8 +1,6 @@
-import dva from "dva";
-import route from "./route";
+import React from 'react';
+import { render } from 'react-dom';
 
-const app = dva();
+import App from "./App";
 
-app.router(route);
-
-app.start('#stage')
+render(<App />, document.querySelector('#stage'));

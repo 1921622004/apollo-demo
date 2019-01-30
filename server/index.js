@@ -1,6 +1,7 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const { ApolloServer, gql } = require('apollo-server-koa');
+const cors = require('@koa/cors');
 
 const { readFile, writeFile } = require('./utils');
 
@@ -16,7 +17,7 @@ const typeDefs = gql`
     TodoList: [TodoItem!]
   }
   type Mutation {
-    createTodo(content: String, checked: Boolean): [TodoItem!]!
+    createTodo(content: String!, checked: Boolean): [TodoItem!]!
     checkTodo(id: ID): [TodoItem!]!
   }
 `;
@@ -32,14 +33,15 @@ const resolvers = {
   Mutation: {
     createTodo: async (_, { content, checked }) => {
       const data = await readFile('./mock/index.json');
-      const todoList = JSON.parse(data);
+      let todoList = JSON.parse(data);
+      todoList = todoList.concat([{
+        content,
+        checked,
+        id: Math.round(Math.random() * 10000)
+      }]);
       const writeErr = await writeFile(
         './mock/index.json',
-        JSON.stringify(todoList.concat([{
-          content,
-          checked,
-          id: Math.round(Math.random() * 10000)
-        }]))
+        JSON.stringify(todoList)
       );
       return !writeErr && todoList
     },
@@ -70,6 +72,7 @@ const app = new Koa();
 
 server.applyMiddleware({ app });
 
+app.use(cors());
 app.use(koaStatic('build'));
 app.use(bodyParser());
 

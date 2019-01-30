@@ -12,7 +12,7 @@ module.exports = {
         path: path.resolve(__dirname, 'build')
     },
     resolve: {
-        extensions: ['.jsx', '.js']
+        extensions: ['.jsx', '.mjs', '.js']
     },
     module: {
         rules: [
