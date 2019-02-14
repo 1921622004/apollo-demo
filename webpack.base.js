@@ -4,7 +4,7 @@ const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
-    entry:{
+    entry: {
         main: __dirname + '/src/index'
     },
     output: {
@@ -20,13 +20,21 @@ module.exports = {
                 test: /\.(less|css)$/,
                 use: ExtractTextWebpackPlugin.extract({
                     fallback: "style-loader",
-                    use: ["less-loader", "css-loader"]
+                    use: [
+                        "css-loader",
+                        {
+                            loader: "less-loader",
+                            options:{
+                                javascriptEnabled: true
+                            }
+                        }
+                    ]
                 })
             },
             {
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
-                use:[
+                use: [
                     "babel-loader"
                 ]
             },
