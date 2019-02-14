@@ -6,7 +6,7 @@ const baseConfig = require('./webpack.base.js');
 
 const devConfig = webpackMerge(baseConfig, {
   mode: 'development',
-  devtool: 'inline-source-map',
+  devtool: 'cheap-module-source-map',
 });
 const compiler = webpack(devConfig);
 const server = new WebpackDevServer(compiler,{
