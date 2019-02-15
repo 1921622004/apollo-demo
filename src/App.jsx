@@ -28,12 +28,9 @@ const tabList = [
 const App = () => (
   <ApolloProvider client={client}>
     <Card
-      bordered
-      style={{ width: "80%" }}
-      title="TODO Demo"
-      tabList={tabList}
+      style={{ width: "80%", margin: "100px auto",  }}
     >
-      <h1>Todo</h1>
+      <h1>todo-demo</h1>
       <AddTodo />
       <TodoList />
     </Card>
