@@ -1,7 +1,8 @@
 import React from "react";
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
-import { Input, Checkbox } from "antd";
+import { Input, Checkbox, List } from "antd";
+import TodoItem from "./TodoItem";
 
 const QUERY_TODO = gql`
   {
@@ -18,17 +19,15 @@ const TodoList = () => (
     query={QUERY_TODO}
   >
     {({ loading, error, data }) => {
-      if (loading) return <p>loading...</p>
-      if (error) return <p>error...</p>
-      return data.TodoList.map(({ content, id, checked }) => {
-        return (
-          <div key={id}>
-            <p>{content}</p>
-            <Input />
-            <Checkbox checked={checked}/>
-          </div>
-        )
-      })
+      if (loading) return <p>loading...</p>;
+      if (error) return <p>error...</p>;
+      return (
+        <List
+          dataSource={data.TodoList}
+          itemLayout="vertical"
+          renderItem={(item) => <TodoItem data={item}/>}
+        />
+      )
     }}
   </Query>
 );

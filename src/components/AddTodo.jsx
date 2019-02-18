@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import gql from "graphql-tag";
 import { Mutation } from "react-apollo";
 import { Input } from "antd";
@@ -22,8 +22,26 @@ const QUERY_TODO = gql`
   }
 `;
 
-const AddTodo = () => {
+const AddTodo = ({ addTodo }) => {
   const [newTodo, setNewTodo] = useState('');
+  const submitHandler = () => {
+    addTodo({ variables: { content: newTodo, checked: false } });
+    setNewTodo('');
+  };
+  return useMemo(() => (
+    <Input
+      value={newTodo}
+      onChange={ev => {
+        const val = ev.target.value;
+        setNewTodo(val);
+      }}
+      placeholder="按回车添加待办"
+      onPressEnter={submitHandler}
+    />
+  ), [newTodo]);
+};
+
+export default () => {
   return (
     <Mutation
       mutation={ADD_TODO}
@@ -36,23 +54,9 @@ const AddTodo = () => {
         })
       }}
     >
-      {(addTodo) => (
-        <div>
-          <Input
-            value={newTodo}
-            onChange={ev => {
-              const val = ev.target.value;
-              setNewTodo(val);
-            }}
-          />
-          <button onClick={() => {
-            addTodo({ variables: { content: newTodo, checked: false } });
-            setNewTodo('');
-          }}>submit</button>
-        </div>
-      )}
+    {(addTodo) => {
+      return <AddTodo addTodo={addTodo} />
+    }}
     </Mutation>
   )
 };
-
-export default AddTodo
