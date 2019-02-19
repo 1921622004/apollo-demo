@@ -1,7 +1,7 @@
 import React from "react";
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
-import { Input, Checkbox, List } from "antd";
+import { List } from "antd";
 import TodoItem from "./TodoItem";
 
 const QUERY_TODO = gql`

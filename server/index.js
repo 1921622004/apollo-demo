@@ -18,7 +18,8 @@ const typeDefs = gql`
   }
   type Mutation {
     createTodo(content: String!, checked: Boolean): [TodoItem!]!
-    checkTodo(id: ID): [TodoItem!]!
+    updateTodo(content: String!, checked: Boolean, id:ID): [TodoItem!]!,
+    deleteTodo(id: ID): [TodoItem!]!
   }
 `;
 
@@ -45,15 +46,21 @@ const resolvers = {
       );
       return !writeErr && todoList
     },
-    checkTodo: async (_, { id }) => {
+    updateTodo: async (_, { id, content, checked }) => {
       const data = await readFile('./mock/index.json');
       const todoList = JSON.parse(data);
-      todoList.forEach((item) => {
-        const { id, checked } = item;
-        if (item.id === id) {
-          item.checked = !checked
-        }
-      });
+      const currentIndex = todoList.findIndex(item => item.id === id);
+      todoList[currentIndex] = { id, content, checked };
+      const writeErr = await writeFile(
+        './mock/index.json',
+        JSON.stringify(todoList)
+      );
+      return !writeErr && todoList
+    },
+    deleteTodo: async (_, { id }) => {
+      const data = await readFile('./mock/index.json');
+      let todoList = JSON.parse(data);
+      todoList = todoList.filter(item => item.id !== id);
       const writeErr = await writeFile(
         './mock/index.json',
         JSON.stringify(todoList)

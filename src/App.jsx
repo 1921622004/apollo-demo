@@ -10,21 +10,6 @@ const client = new ApolloClient({
   uri: 'http://localhost:3000/graphql',
 })
 
-const tabList = [
-  {
-    key: "checked",
-    tab: "已完成"
-  },
-  {
-    key: "unchecked",
-    tab: "未完成"
-  },
-  {
-    key: "all",
-    tab: "全部"
-  },
-]
-
 const App = () => (
   <ApolloProvider client={client}>
     <Card
