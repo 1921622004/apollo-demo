@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Icon, Input, List, Checkbox } from "antd";
+import { adopt } from "react-adopt";
 import { Mutation } from "react-apollo";
 import gql from "graphql-tag";
 
@@ -22,7 +23,24 @@ const DELETE_TODO = gql`
       checkde
     }
   }
-`
+`;
+
+const Container = adopt({
+  updateHandler: ({ render }) => (
+    <Mutation
+      mutation={UPDATE_TODO}
+    >
+      {render}
+    </Mutation>
+  ),
+  deleteHandler: ({ render }) => (
+    <Mutation
+      mutation={DELETE_TODO}
+    >
+      {render}
+    </Mutation>
+  )
+})
 
 const TodoItem = ({ data }) => {
   const { content, checked, id } = data;
@@ -33,50 +51,54 @@ const TodoItem = ({ data }) => {
     setValue(val);
   };
   return (
-    <Item>
-      <div class="todo-item">
-        <Checkbox
-          checked={checked}
-          disabled={!isEditing}
-          style={{
-            fontSize: "24px",
-            color: checked ? "green" : "red"
-          }}
-        />
-        {
-          isEditing ? (
-            <Input
-              value={value}
-              style={{ width: 400 }}
-              onChange={inputHandler}
+    <Container>
+      {({ deleteHandler, updateHandler }) => (
+        <Item>
+          <div class="todo-item">
+            <Checkbox
+              checked={checked}
+              disabled={!isEditing}
+              style={{
+                fontSize: "24px",
+                color: checked ? "green" : "red"
+              }}
             />
-          ) : (
-              <span
-                className={checked ? "todo-content checked" : "todo-content"}
-              >
-                {content}
-              </span>
-            )
-        }
-        <div style={{ width: 80, textAlign: "center" }}>
-          <Icon
-            type={isEditing ? "save" : "edit"}
-            onClick={() => {
-              setEditing(!isEditing);
-            }}
-            style={{ fontSize: "24px", color: "gray" }}
-          />
-          {
-            !isEditing && (
+            {
+              isEditing ? (
+                <Input
+                  value={value}
+                  style={{ width: 400 }}
+                  onChange={inputHandler}
+                />
+              ) : (
+                  <span
+                    className={checked ? "todo-content checked" : "todo-content"}
+                  >
+                    {content}
+                  </span>
+                )
+            }
+            <div style={{ width: 80, textAlign: "center" }}>
               <Icon
-                type="close"
-                style={{ fontSize: "24px", color: "red", marginLeft: "12px" }}
+                type={isEditing ? "save" : "edit"}
+                onClick={() => {
+                  setEditing(!isEditing);
+                }}
+                style={{ fontSize: "24px", color: "gray" }}
               />
-            )
-          }
-        </div>
-      </div>
-    </Item>
+              {
+                !isEditing && (
+                  <Icon
+                    type="close"
+                    style={{ fontSize: "24px", color: "red", marginLeft: "12px" }}
+                  />
+                )
+              }
+            </div>
+          </div>
+        </Item>
+      )}
+    </Container>
   )
 };
 

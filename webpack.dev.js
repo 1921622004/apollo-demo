@@ -14,4 +14,4 @@ const server = new WebpackDevServer(compiler,{
   open: true,
   inline: true
 });
-server.listen(4444);
+server.listen(4443);
