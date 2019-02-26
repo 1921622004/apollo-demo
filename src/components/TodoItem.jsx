@@ -41,7 +41,6 @@ const Container = adopt({
     <Mutation
       mutation={UPDATE_TODO}
       update={(cache, { data }) => {
-        console.log(data);
         cache.writeQuery({
           query: QUERY_TODO,
           data: {

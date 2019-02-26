@@ -15,7 +15,7 @@ const ADD_TODO = gql`
 const QUERY_TODO = gql`
   {
     TodoList{
-      content
+      content 
       id
       checked
     }
