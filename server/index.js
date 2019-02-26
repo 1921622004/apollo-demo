@@ -49,7 +49,7 @@ const resolvers = {
     updateTodo: async (_, { id, content, checked }) => {
       const data = await readFile('./mock/index.json');
       const todoList = JSON.parse(data);
-      const currentIndex = todoList.findIndex(item => item.id === id);
+      const currentIndex = todoList.findIndex(item => item.id + '' === id);
       todoList[currentIndex] = { id, content, checked };
       const writeErr = await writeFile(
         './mock/index.json',
@@ -60,7 +60,10 @@ const resolvers = {
     deleteTodo: async (_, { id }) => {
       const data = await readFile('./mock/index.json');
       let todoList = JSON.parse(data);
-      todoList = todoList.filter(item => item.id !== id);
+      todoList = todoList.filter(item => item.id + '' !== id);
+      console.log(id);
+      console.log(todoList);
+      
       const writeErr = await writeFile(
         './mock/index.json',
         JSON.stringify(todoList)

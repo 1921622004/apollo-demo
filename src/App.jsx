@@ -13,7 +13,7 @@ const client = new ApolloClient({
 const App = () => (
   <ApolloProvider client={client}>
     <Card
-      style={{ width: "80%", margin: "100px auto",  }}
+      style={{ width: "600px", margin: "100px auto",  }}
     >
       <h1>todo-demo</h1>
       <AddTodo />
