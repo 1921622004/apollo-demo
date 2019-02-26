@@ -54,9 +54,9 @@ export default () => {
         })
       }}
     >
-    {(addTodo) => {
-      return <AddTodo addTodo={addTodo} />
-    }}
+      {(addTodo) => {
+        return <AddTodo addTodo={addTodo} />
+      }}
     </Mutation>
   )
 };

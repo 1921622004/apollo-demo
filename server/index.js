@@ -61,9 +61,6 @@ const resolvers = {
       const data = await readFile('./mock/index.json');
       let todoList = JSON.parse(data);
       todoList = todoList.filter(item => item.id + '' !== id);
-      console.log(id);
-      console.log(todoList);
-      
       const writeErr = await writeFile(
         './mock/index.json',
         JSON.stringify(todoList)
